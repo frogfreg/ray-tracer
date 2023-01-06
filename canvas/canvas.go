@@ -1,6 +1,7 @@
 package canvas
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	tpv "ray-tracer/tuplespointsvectors"
@@ -8,7 +9,7 @@ import (
 )
 
 type Canvas struct {
-	width, height int
+	Width, Height int
 
 	Pixels [][]tpv.Tuple
 }
@@ -17,8 +18,8 @@ func NewCanvas(width, height int) Canvas {
 
 	canvas := Canvas{}
 
-	canvas.width = width
-	canvas.height = height
+	canvas.Width = width
+	canvas.Height = height
 
 	pixels := make([][]tpv.Tuple, height)
 
@@ -34,9 +35,17 @@ func NewCanvas(width, height int) Canvas {
 
 }
 
-func (c *Canvas) WritePixel(row, column int, color tpv.Tuple) {
+func (c *Canvas) WritePixel(x, y int, color tpv.Tuple) error {
 
-	c.Pixels[column][row] = color
+	if y >= c.Height || y <= 0 {
+		return errors.New("index out of range")
+	}
+	if x >= c.Width || x <= 0 {
+		return errors.New("index out of range")
+	}
+
+	c.Pixels[y][x] = color
+	return nil
 
 }
 
@@ -45,7 +54,7 @@ func (c *Canvas) ToPPM() string {
 	var builder strings.Builder
 	line := ""
 
-	dimensions := fmt.Sprintf("%v %v\n", c.width, c.height)
+	dimensions := fmt.Sprintf("%v %v\n", c.Width, c.Height)
 
 	builder.WriteString("P3\n")
 	builder.WriteString(dimensions)

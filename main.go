@@ -1,33 +1,60 @@
 package main
 
 import (
+	"math"
 	"os"
 	"ray-tracer/canvas"
+	tpv "ray-tracer/tuplespointsvectors"
 )
+
+type projectile struct {
+	position, velocity tpv.Tuple
+}
+
+type environment struct {
+	gravity, wind tpv.Tuple
+}
+
+func tick(e environment, p projectile) projectile {
+
+	newProj := projectile{}
+
+	newProj.position = tpv.Add(p.position, p.velocity)
+
+	newProj.velocity = tpv.Add(tpv.Add(p.velocity, e.gravity), e.wind)
+
+	return newProj
+
+}
 
 func main() {
 
-	canvas := canvas.NewCanvas(5, 3)
+	p := projectile{tpv.NewPoint(0, 1, 0), tpv.ScMult(tpv.Normalized(tpv.NewVector(1, 1.8, 0)), 11.25)}
+	e := environment{tpv.NewVector(0, -0.1, 0), tpv.NewVector(-0.01, 0, 0)}
 
-	// c1 := tpv.Newrgb(1.5, 0, 0)
-	// c2 := tpv.Newrgb(0, 0.5, 0)
-	// c3 := tpv.Newrgb(-0.5, 0, 1)
+	c := canvas.NewCanvas(900, 550)
+	color := tpv.Newrgb(0, 1, 0)
 
-	// canvas.WritePixel(0, 0, c1)
-	// canvas.WritePixel(2, 1, c2)
-	// canvas.WritePixel(4, 2, c3)
+	c.WritePixel(int(math.Ceil(p.position.X)), c.Height-int(math.Ceil(p.position.Y)), color)
 
-	// canvas := canvas.NewCanvas(0, 0)
-	// color := tpv.Newrgb(1, 0.8, 0.6)
+	for {
 
-	// for rowIndex, row := range canvas.Pixels {
-	// 	for colIndex := range row {
+		if p.position.Y <= 0 {
+			break
+		}
 
-	// 		canvas.Pixels[rowIndex][colIndex] = color
-	// 	}
-	// }
+		// fmt.Printf("Current position %v\n", p.position)
 
-	header := canvas.ToPPM()
+		p = tick(e, p)
 
-	os.WriteFile("./temp.txt", []byte(header), 0666)
+		x := int(math.Ceil(p.position.X))
+		y := int(math.Ceil(p.position.Y))
+
+		c.WritePixel(x, c.Height-y, color)
+	}
+
+	header := c.ToPPM()
+
+	os.WriteFile("./projectile.ppm", []byte(header), 0666)
+
 }
