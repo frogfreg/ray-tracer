@@ -1,45 +1,24 @@
 package main
 
 import (
-	"fmt"
+	"os"
+	"ray-tracer/canvas"
 	tpv "ray-tracer/tuplespointsvectors"
 )
 
-type projectile struct {
-	position, velocity tpv.Tuple
-}
-
-type environment struct {
-	gravity, wind tpv.Tuple
-}
-
-func tick(e environment, p projectile) projectile {
-
-	newProj := projectile{}
-
-	newProj.position = tpv.Add(p.position, p.velocity)
-
-	newProj.velocity = tpv.Add(tpv.Add(p.velocity, e.gravity), e.wind)
-
-	return newProj
-
-}
-
 func main() {
 
-	p := projectile{tpv.NewPoint(0, 1, 0), tpv.Normalized(tpv.NewVector(1, 1, 0))}
-	e := environment{tpv.NewVector(0, -0.1, 0), tpv.NewVector(-0.01, 0, 0)}
+	canvas := canvas.NewCanvas(5, 3)
 
-	for {
+	c1 := tpv.Newrgb(1.5, 0, 0)
+	c2 := tpv.Newrgb(0, 0.5, 0)
+	c3 := tpv.Newrgb(-0.5, 0, 1)
 
-		if p.position.Y <= 0 {
-			break
-		}
+	canvas.WritePixel(0, 0, c1)
+	canvas.WritePixel(2, 1, c2)
+	canvas.WritePixel(4, 2, c3)
 
-		fmt.Printf("Current position %v\n", p.position)
+	header := canvas.ToPPM()
 
-		p = tick(e, p)
-
-	}
-
+	os.WriteFile("./temp.txt", []byte(header), 0666)
 }

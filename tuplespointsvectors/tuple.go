@@ -102,3 +102,19 @@ func Cross(a, b Tuple) Tuple {
 		a.X*b.Y-a.Y*b.X)
 
 }
+
+func Newrgb(a, b, c float64) Tuple {
+	return Tuple{a, b, c, 0}
+}
+
+func HadamardProd(c1, c2 Tuple) Tuple {
+
+	newColor := Tuple{}
+
+	newColor.X = c1.X * c2.X
+	newColor.Y = c1.Y * c2.Y
+	newColor.Z = c1.Z * c2.Z
+
+	return newColor
+
+}
