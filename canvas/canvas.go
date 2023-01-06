@@ -56,7 +56,7 @@ func (c *Canvas) ToPPM() string {
 		for _, col := range row {
 
 			if len(line)+12 >= 70 {
-				builder.WriteString("\n")
+				builder.WriteString(line + "\n")
 				line = ""
 			}
 
@@ -64,9 +64,9 @@ func (c *Canvas) ToPPM() string {
 			var g int
 			var b int
 
-			r = int(math.Floor(col.X * 255))
-			g = int(math.Floor(col.Y * 255))
-			b = int(math.Floor(col.Z * 255))
+			r = int(math.Ceil(col.X * 255))
+			g = int(math.Ceil(col.Y * 255))
+			b = int(math.Ceil(col.Z * 255))
 
 			if col.X <= 0 {
 				r = 0
@@ -92,11 +92,12 @@ func (c *Canvas) ToPPM() string {
 			}
 
 			line += fmt.Sprintf("%v %v %v", r, g, b)
-			builder.WriteString(line)
 
 		}
 
+		builder.WriteString(line)
 		builder.WriteString("\n")
+		line = ""
 
 	}
 
