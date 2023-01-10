@@ -1,34 +1,38 @@
 package matrix
 
-type FbFmatrix [4][4]float64
-type TbTmatrix [3][3]float64
-type SquareMatrix [2][2]float64
+type matrix [][]float64
 
-func (m *FbFmatrix) Shape() (int, string) {
-	return 4, "4x4"
+func NewMatrix(rows, columns int) matrix {
+
+	if rows <= 0 || columns <= 0 {
+		return matrix{}
+	}
+
+	mat := make([][]float64, rows)
+
+	for i := range mat {
+		mat[i] = make([]float64, columns)
+	}
+
+	return mat
 }
-func (m *TbTmatrix) Shape() (int, string) {
-	return 3, "3x3"
-}
-func (m *SquareMatrix) Shape() (int, string) {
-	return 2, "2x2"
-}
 
-type Matrix interface {
-	Shape() (int, string)
-}
+func AreEqual(a, b matrix) bool {
 
-func AreEqual[M Matrix](a, b M) bool {
+	if len(a) == 0 && len(b) == 0 {
+		return true
+	}
 
-	aSize, aShape := a.Shape()
-	bSize, bShape := b.Shape()
-
-	if aShape != bShape {
+	if len(a) != len(b) {
 		return false
 	}
 
-	for i := 0; i < aSize; i++ {
-		for j := 0; j < bSize; j++ {
+	if len(a[0]) != len(b[0]) {
+		return false
+	}
+
+	for i, row := range a {
+		for j := range row {
 			if a[i][j] != b[i][j] {
 				return false
 			}
@@ -38,22 +42,3 @@ func AreEqual[M Matrix](a, b M) bool {
 	return true
 
 }
-
-// func NewFbFMatrix() FbFmatrix {
-
-// 	var nm [4][4]floaany
-
-// 	return nm
-// }
-// func NewTbTMatrix() TbTmatrix {
-
-// 	var nm [3][3]float64
-
-// 	return nm
-// }
-// func NewSquareMatrix() Matrix {
-
-// 	var nm [2][2]float64
-
-// 	return nm
-// }
