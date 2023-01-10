@@ -1,6 +1,22 @@
 package matrix
 
+import (
+	tpv "ray-tracer/tuplespointsvectors"
+)
+
 type matrix [][]float64
+
+func (m matrix) Shape() (int, int) {
+	lenRows := len(m)
+	lenColumns := 0
+
+	if lenRows > 0 {
+		lenColumns = len(m[0])
+	}
+
+	return lenRows, lenColumns
+
+}
 
 func NewMatrix(rows, columns int) matrix {
 
@@ -12,6 +28,25 @@ func NewMatrix(rows, columns int) matrix {
 
 	for i := range mat {
 		mat[i] = make([]float64, columns)
+	}
+
+	return mat
+}
+
+func NewIdentityMatrix(rows, columns int) matrix {
+
+	if rows != columns {
+		return matrix{}
+	}
+
+	mat := NewMatrix(rows, columns)
+
+	for i, row := range mat {
+		for j := range row {
+			if i == j {
+				mat[i][j] = 1
+			}
+		}
 	}
 
 	return mat
@@ -41,4 +76,54 @@ func AreEqual(a, b matrix) bool {
 
 	return true
 
+}
+
+func Multiply(a, b matrix) matrix {
+
+	newRows, _ := a.Shape()
+	_, newCols := b.Shape()
+
+	new := NewMatrix(newRows, newCols)
+
+	for rowIndex := 0; rowIndex < 4; rowIndex++ {
+		for colIndex := 0; colIndex < 4; colIndex++ {
+			new[rowIndex][colIndex] = a[rowIndex][0]*b[0][colIndex] +
+				a[rowIndex][1]*b[1][colIndex] +
+				a[rowIndex][2]*b[2][colIndex] +
+				a[rowIndex][3]*b[3][colIndex]
+
+		}
+	}
+
+	return new
+
+}
+
+func TupleMultiply(a tpv.Tuple, b matrix) tpv.Tuple {
+
+	var tempSlice [4]float64
+
+	for rowIndex, row := range b {
+		tupleB := tpv.Tuple{X: row[0], Y: row[1], Z: row[2], W: row[3]}
+
+		tempSlice[rowIndex] = tpv.Dot(a, tupleB)
+	}
+
+	return tpv.Tuple{X: tempSlice[0], Y: tempSlice[1], Z: tempSlice[2], W: tempSlice[3]}
+
+}
+
+func Transpose(m matrix) matrix {
+
+	rows, cols := m.Shape()
+
+	new := NewMatrix(cols, rows)
+
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			new[j][i] = m[i][j]
+		}
+	}
+
+	return new
 }
