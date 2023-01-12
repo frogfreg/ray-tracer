@@ -127,3 +127,41 @@ func Transpose(m matrix) matrix {
 
 	return new
 }
+
+func SimpleDeterminant(m matrix) float64 {
+	return m[0][0]*m[1][1] - (m[0][1] * m[1][0])
+}
+
+func Submatrix(m matrix, delRow, delCol int) matrix {
+
+	new := matrix{}
+
+	for rowIndex := 0; rowIndex < len(m); rowIndex++ {
+		if rowIndex == delRow {
+			continue
+		}
+
+		newRow := append(m[rowIndex][:delCol], m[rowIndex][delCol+1:]...)
+
+		new = append(new, newRow)
+	}
+
+	return new
+
+}
+
+func Minor(m matrix, delRow, delCol int) float64 {
+
+	return SimpleDeterminant(Submatrix(m, delRow, delCol))
+
+}
+
+func Cofactor(m matrix, delRow, delCol int) float64 {
+	multiplier := 1.0
+
+	if (delRow+delCol)%2 != 0 {
+		multiplier = -1.0
+	}
+
+	return multiplier * Minor(m, delRow, delCol)
+}

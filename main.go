@@ -1,60 +1,42 @@
 package main
 
 import (
-	"math"
-	"os"
-	"ray-tracer/canvas"
-	tpv "ray-tracer/tuplespointsvectors"
+	"fmt"
+	"ray-tracer/matrix"
 )
-
-type projectile struct {
-	position, velocity tpv.Tuple
-}
-
-type environment struct {
-	gravity, wind tpv.Tuple
-}
-
-func tick(e environment, p projectile) projectile {
-
-	newProj := projectile{}
-
-	newProj.position = tpv.Add(p.position, p.velocity)
-
-	newProj.velocity = tpv.Add(tpv.Add(p.velocity, e.gravity), e.wind)
-
-	return newProj
-
-}
 
 func main() {
 
-	p := projectile{tpv.NewPoint(0, 1, 0), tpv.ScMult(tpv.Normalized(tpv.NewVector(1, 1.8, 0)), 11.25)}
-	e := environment{tpv.NewVector(0, -0.1, 0), tpv.NewVector(-0.01, 0, 0)}
+	// a := matrix.NewMatrix(2, 2)
 
-	c := canvas.NewCanvas(900, 550)
-	color := tpv.Newrgb(0, 1, 0)
+	// a[0][0] = 1
+	// a[0][1] = 5
+	// a[1][0] = -3
+	// a[1][1] = 2
 
-	c.WritePixel(int(math.Ceil(p.position.X)), c.Height-int(math.Ceil(p.position.Y)), color)
+	// for _, row := range a {
+	// 	fmt.Println(row)
+	// }
 
-	for {
+	// fmt.Printf("The determinant is: %v", matrix.SimpleDeterminant(a))
 
-		if p.position.Y <= 0 {
-			break
-		}
+	a := matrix.NewMatrix(3, 3)
 
-		// fmt.Printf("Current position %v\n", p.position)
+	a[0][0] = 3
+	a[0][1] = 5
+	a[0][2] = 0
+	a[1][0] = 2
+	a[1][1] = -1
+	a[1][2] = -7
+	a[2][0] = 6
+	a[2][1] = -1
+	a[2][2] = 5
 
-		p = tick(e, p)
-
-		x := int(math.Ceil(p.position.X))
-		y := int(math.Ceil(p.position.Y))
-
-		c.WritePixel(x, c.Height-y, color)
+	for _, row := range a {
+		fmt.Println(row)
 	}
 
-	header := c.ToPPM()
+	fmt.Println()
 
-	os.WriteFile("./projectile.ppm", []byte(header), 0666)
-
+	fmt.Printf("The cofactor is: %v", matrix.Cofactor(a, 1, 0))
 }
