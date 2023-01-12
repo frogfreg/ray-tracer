@@ -128,10 +128,6 @@ func Transpose(m matrix) matrix {
 	return new
 }
 
-func simpleDeterminant(m matrix) float64 {
-	return m[0][0]*m[1][1] - (m[0][1] * m[1][0])
-}
-
 func Submatrix(m matrix, delRow, delCol int) matrix {
 
 	new := matrix{}
@@ -154,7 +150,7 @@ func Submatrix(m matrix, delRow, delCol int) matrix {
 
 func Minor(m matrix, delRow, delCol int) float64 {
 
-	return simpleDeterminant(Submatrix(m, delRow, delCol))
+	return Submatrix(m, delRow, delCol).Determinant()
 
 }
 
@@ -168,21 +164,25 @@ func Cofactor(m matrix, delRow, delCol int) float64 {
 	return multiplier * Minor(m, delRow, delCol)
 }
 
-// func (m matrix) Determinant() float64 {
+func (m matrix) Determinant() float64 {
 
-// 	rows, cols := m.Shape()
+	rows, cols := m.Shape()
 
-// 	if rows == 2 && cols == 2 {
-// 		return simpleDeterminant(m)
-// 	}
+	if rows == 2 && cols == 2 {
+		return m[0][0]*m[1][1] - (m[0][1] * m[1][0])
+	}
 
-// 	det := 0.0
+	det := 0.0
 
-// 	for colIndex, num := range m[0] {
+	for colIndex, num := range m[0] {
 
-// 		det += (num * Cofactor(m, 0, colIndex))
-// 	}
+		det += (num * Cofactor(m, 0, colIndex))
+	}
 
-// 	return det
+	return det
 
-// }
+}
+
+func (m matrix) IsInvertible() bool {
+	return m.Determinant() != 0
+}
