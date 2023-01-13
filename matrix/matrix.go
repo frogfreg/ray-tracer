@@ -2,9 +2,17 @@ package matrix
 
 import (
 	tpv "ray-tracer/tuplespointsvectors"
+
+	"github.com/shopspring/decimal"
 )
 
-type matrix [][]float64
+type matrix [][]decimal.Decimal
+
+func same(a, b decimal.Decimal) bool {
+	epsilon := decimal.NewFromFloat(0.0000001)
+
+	return a.Sub(b).Abs().LessThan(epsilon)
+}
 
 func (m matrix) Shape() (int, int) {
 	lenRows := len(m)
@@ -24,10 +32,10 @@ func NewMatrix(rows, columns int) matrix {
 		return matrix{}
 	}
 
-	mat := make([][]float64, rows)
+	mat := make([][]decimal.Decimal, rows)
 
 	for i := range mat {
-		mat[i] = make([]float64, columns)
+		mat[i] = make([]decimal.Decimal, columns)
 	}
 
 	return mat
@@ -44,7 +52,7 @@ func NewIdentityMatrix(rows, columns int) matrix {
 	for i, row := range mat {
 		for j := range row {
 			if i == j {
-				mat[i][j] = 1
+				mat[i][j] = decimal.NewFromInt(1)
 			}
 		}
 	}
@@ -68,7 +76,8 @@ func AreEqual(a, b matrix) bool {
 
 	for i, row := range a {
 		for j := range row {
-			if a[i][j] != b[i][j] {
+
+			if !same(a[i][j], b[i][j]) {
 				return false
 			}
 		}
@@ -87,10 +96,10 @@ func Multiply(a, b matrix) matrix {
 
 	for rowIndex := 0; rowIndex < 4; rowIndex++ {
 		for colIndex := 0; colIndex < 4; colIndex++ {
-			new[rowIndex][colIndex] = a[rowIndex][0]*b[0][colIndex] +
-				a[rowIndex][1]*b[1][colIndex] +
-				a[rowIndex][2]*b[2][colIndex] +
-				a[rowIndex][3]*b[3][colIndex]
+			new[rowIndex][colIndex] = decimal.Sum(a[rowIndex][0].Mul(b[0][colIndex]),
+				a[rowIndex][1].Mul(b[1][colIndex]),
+				a[rowIndex][2].Mul(b[2][colIndex]),
+				a[rowIndex][3].Mul(b[3][colIndex]))
 
 		}
 	}
@@ -104,7 +113,7 @@ func TupleMultiply(a tpv.Tuple, b matrix) tpv.Tuple {
 	var tempSlice [4]float64
 
 	for rowIndex, row := range b {
-		tupleB := tpv.Tuple{X: row[0], Y: row[1], Z: row[2], W: row[3]}
+		tupleB := tpv.Tuple{X: row[0].InexactFloat64(), Y: row[1].InexactFloat64(), Z: row[2].InexactFloat64(), W: row[3].InexactFloat64()}
 
 		tempSlice[rowIndex] = tpv.Dot(a, tupleB)
 	}
@@ -137,7 +146,7 @@ func Submatrix(m matrix, delRow, delCol int) matrix {
 			continue
 		}
 
-		rowCopy := append([]float64{}, m[rowIndex][:delCol]...)
+		rowCopy := append([]decimal.Decimal{}, m[rowIndex][:delCol]...)
 
 		newRow := append(rowCopy, m[rowIndex][delCol+1:]...)
 
@@ -148,35 +157,36 @@ func Submatrix(m matrix, delRow, delCol int) matrix {
 
 }
 
-func Minor(m matrix, delRow, delCol int) float64 {
+func Minor(m matrix, delRow, delCol int) decimal.Decimal {
 
 	return Submatrix(m, delRow, delCol).Determinant()
 
 }
 
-func Cofactor(m matrix, delRow, delCol int) float64 {
+func Cofactor(m matrix, delRow, delCol int) decimal.Decimal {
 	multiplier := 1.0
 
 	if (delRow+delCol)%2 != 0 {
 		multiplier = -1.0
 	}
 
-	return multiplier * Minor(m, delRow, delCol)
+	return decimal.NewFromFloat(multiplier).Mul(Minor(m, delRow, delCol))
 }
 
-func (m matrix) Determinant() float64 {
+func (m matrix) Determinant() decimal.Decimal {
 
 	rows, cols := m.Shape()
 
 	if rows == 2 && cols == 2 {
-		return m[0][0]*m[1][1] - (m[0][1] * m[1][0])
+		return m[0][0].Mul(m[1][1]).Sub(m[0][1].Mul(m[1][0]))
+
 	}
 
-	det := 0.0
+	det := decimal.Zero
 
 	for colIndex, num := range m[0] {
 
-		det += (num * Cofactor(m, 0, colIndex))
+		det = det.Add((num.Mul(Cofactor(m, 0, colIndex))))
 	}
 
 	return det
@@ -184,7 +194,7 @@ func (m matrix) Determinant() float64 {
 }
 
 func (m matrix) IsInvertible() bool {
-	return m.Determinant() != 0
+	return !m.Determinant().IsZero()
 }
 
 func (m matrix) Inverse() matrix {
@@ -205,7 +215,7 @@ func (m matrix) Inverse() matrix {
 
 	for i := range new {
 		for j := range new[0] {
-			new[i][j] = new[i][j] / det
+			new[i][j] = new[i][j].Div(det)
 		}
 	}
 
