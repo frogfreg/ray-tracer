@@ -8,6 +8,8 @@ I just finished chapter two and produced this image that portrays the trajectory
 
 ![Trajectory of projectile](./images/projectile.png)
 
-## Currently at chapter 3
+## Finished chapter 3
 
-Todo: create function to get the inverse of a matrix
+Not much to show here, but now I can calculate the inverse of a matrix and other useful properties of matrices
+
+
