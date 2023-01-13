@@ -186,3 +186,29 @@ func (m matrix) Determinant() float64 {
 func (m matrix) IsInvertible() bool {
 	return m.Determinant() != 0
 }
+
+func (m matrix) Inverse() matrix {
+
+	det := m.Determinant()
+
+	rows, cols := m.Shape()
+
+	new := NewMatrix(rows, cols)
+
+	for i := range new {
+		for j := range new[0] {
+			new[i][j] = Cofactor(m, i, j)
+		}
+	}
+
+	new = Transpose(new)
+
+	for i := range new {
+		for j := range new[0] {
+			new[i][j] = new[i][j] / det
+		}
+	}
+
+	return new
+
+}
