@@ -1,6 +1,7 @@
 package matrix
 
 import (
+	"math"
 	tpv "ray-tracer/tuplespointsvectors"
 
 	"github.com/shopspring/decimal"
@@ -218,6 +219,77 @@ func (m matrix) Inverse() matrix {
 			new[i][j] = new[i][j].Div(det)
 		}
 	}
+
+	return new
+
+}
+
+func Translation(x, y, z float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][3] = decimal.NewFromFloat(x)
+	new[1][3] = decimal.NewFromFloat(y)
+	new[2][3] = decimal.NewFromFloat(z)
+
+	return new
+}
+
+func Scaling(x, y, z float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][0] = decimal.NewFromFloat(x)
+	new[1][1] = decimal.NewFromFloat(y)
+	new[2][2] = decimal.NewFromFloat(z)
+
+	return new
+
+}
+
+func RotateX(radians float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[1][1] = decimal.NewFromFloat(math.Cos(radians))
+	new[1][2] = decimal.NewFromFloat(-math.Sin(radians))
+	new[2][1] = decimal.NewFromFloat(math.Sin(radians))
+	new[2][2] = decimal.NewFromFloat(math.Cos(radians))
+
+	return new
+
+}
+
+func RotateY(radians float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][0] = decimal.NewFromFloat(math.Cos(radians))
+	new[0][2] = decimal.NewFromFloat(math.Sin(radians))
+	new[2][0] = decimal.NewFromFloat(-math.Sin(radians))
+	new[2][2] = decimal.NewFromFloat(math.Cos(radians))
+
+	return new
+
+}
+
+func RotateZ(radians float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][0] = decimal.NewFromFloat(math.Cos(radians))
+	new[0][1] = decimal.NewFromFloat(-math.Sin(radians))
+	new[1][0] = decimal.NewFromFloat(math.Sin(radians))
+	new[1][1] = decimal.NewFromFloat(math.Cos(radians))
+
+	return new
+
+}
+
+func Shearing(xy, xz, yx, yz, zx, zy float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][1] = decimal.NewFromFloat(xy)
+	new[0][2] = decimal.NewFromFloat(xz)
+	new[1][0] = decimal.NewFromFloat(yx)
+	new[1][2] = decimal.NewFromFloat(yz)
+	new[2][0] = decimal.NewFromFloat(zx)
+	new[2][1] = decimal.NewFromFloat(zy)
 
 	return new
 
