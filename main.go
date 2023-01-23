@@ -1,27 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"ray-tracer/matrix"
+	"os"
+	"ray-tracer/canvas"
 	tpv "ray-tracer/tuplespointsvectors"
 )
 
 func main() {
-	transform := matrix.Shearing(0, 0, 0, 0, 0, 1)
-	// fullQuarter := matrix.RotateZ(math.Pi / 2)
+	// p := tpv.NewPoint(0, 1, 0)
 
-	// v := tpv.NewVector(2, 3, 4)
+	canv := canvas.NewCanvas(5, 5)
 
-	// inv := halfQuarter.Inverse()
+	color := tpv.Newrgb(12, 242, 93)
 
-	p := tpv.NewPoint(2, 3, 4)
+	canv.WritePixel(2, 2, color)
 
-	res1 := matrix.TupleMultiply(p, transform)
-	// res2 := matrix.TupleMultiply(p, fullQuarter)
+	// fmt.Println(canv)
 
-	fmt.Println(p)
-
-	fmt.Println(res1, "Is point?", res1.IsPoint(), "Is vector?", res1.IsVector())
-	// fmt.Println(res2, "Is point?", res2.IsPoint(), "Is vector?", res2.IsVector())
+	os.WriteFile("./images/clock.ppm", []byte(canv.ToPPM()), 0666)
 
 }
