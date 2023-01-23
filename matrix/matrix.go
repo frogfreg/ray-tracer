@@ -233,6 +233,17 @@ func Translation(x, y, z float64) matrix {
 
 	return new
 }
+func (m matrix) Translate(x, y, z float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][3] = decimal.NewFromFloat(x)
+	new[1][3] = decimal.NewFromFloat(y)
+	new[2][3] = decimal.NewFromFloat(z)
+
+	res := Multiply(new, m)
+
+	return res
+}
 
 func Scaling(x, y, z float64) matrix {
 	new := NewIdentityMatrix(4, 4)
@@ -244,8 +255,20 @@ func Scaling(x, y, z float64) matrix {
 	return new
 
 }
+func (m matrix) Scale(x, y, z float64) matrix {
+	new := NewIdentityMatrix(4, 4)
 
-func RotateX(radians float64) matrix {
+	new[0][0] = decimal.NewFromFloat(x)
+	new[1][1] = decimal.NewFromFloat(y)
+	new[2][2] = decimal.NewFromFloat(z)
+
+	res := Multiply(new, m)
+
+	return res
+
+}
+
+func RotationX(radians float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[1][1] = decimal.NewFromFloat(math.Cos(radians))
@@ -256,8 +279,21 @@ func RotateX(radians float64) matrix {
 	return new
 
 }
+func (m matrix) RotateX(radians float64) matrix {
+	new := NewIdentityMatrix(4, 4)
 
-func RotateY(radians float64) matrix {
+	new[1][1] = decimal.NewFromFloat(math.Cos(radians))
+	new[1][2] = decimal.NewFromFloat(-math.Sin(radians))
+	new[2][1] = decimal.NewFromFloat(math.Sin(radians))
+	new[2][2] = decimal.NewFromFloat(math.Cos(radians))
+
+	res := Multiply(new, m)
+
+	return res
+
+}
+
+func RotationY(radians float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = decimal.NewFromFloat(math.Cos(radians))
@@ -268,8 +304,21 @@ func RotateY(radians float64) matrix {
 	return new
 
 }
+func (m matrix) RotateY(radians float64) matrix {
+	new := NewIdentityMatrix(4, 4)
 
-func RotateZ(radians float64) matrix {
+	new[0][0] = decimal.NewFromFloat(math.Cos(radians))
+	new[0][2] = decimal.NewFromFloat(math.Sin(radians))
+	new[2][0] = decimal.NewFromFloat(-math.Sin(radians))
+	new[2][2] = decimal.NewFromFloat(math.Cos(radians))
+
+	res := Multiply(new, m)
+
+	return res
+
+}
+
+func RotationZ(radians float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = decimal.NewFromFloat(math.Cos(radians))
@@ -278,6 +327,19 @@ func RotateZ(radians float64) matrix {
 	new[1][1] = decimal.NewFromFloat(math.Cos(radians))
 
 	return new
+
+}
+func (m matrix) RotateZ(radians float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][0] = decimal.NewFromFloat(math.Cos(radians))
+	new[0][1] = decimal.NewFromFloat(-math.Sin(radians))
+	new[1][0] = decimal.NewFromFloat(math.Sin(radians))
+	new[1][1] = decimal.NewFromFloat(math.Cos(radians))
+
+	res := Multiply(new, m)
+
+	return res
 
 }
 
@@ -292,5 +354,20 @@ func Shearing(xy, xz, yx, yz, zx, zy float64) matrix {
 	new[2][1] = decimal.NewFromFloat(zy)
 
 	return new
+
+}
+func (m matrix) Shear(xy, xz, yx, yz, zx, zy float64) matrix {
+	new := NewIdentityMatrix(4, 4)
+
+	new[0][1] = decimal.NewFromFloat(xy)
+	new[0][2] = decimal.NewFromFloat(xz)
+	new[1][0] = decimal.NewFromFloat(yx)
+	new[1][2] = decimal.NewFromFloat(yz)
+	new[2][0] = decimal.NewFromFloat(zx)
+	new[2][1] = decimal.NewFromFloat(zy)
+
+	res := Multiply(new, m)
+
+	return res
 
 }
