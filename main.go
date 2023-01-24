@@ -15,17 +15,18 @@ func main() {
 
 	hourPoints = append(hourPoints, tpv.NewPoint(0, 1, 0))
 
-	for i := 11; i >= 1; i-- {
+	for i := 1; i < 12; i++ {
 
-		transform := matrix.NewIdentityMatrix(4, 4).RotateZ((2.0 * math.Pi) / float64(i*1))
+		transform := matrix.NewIdentityMatrix(4, 4).RotateZ(((2 * math.Pi) / 12) * float64(i))
 
 		newP := matrix.TupleMultiply(hourPoints[0], transform)
 
 		hourPoints = append(hourPoints, newP)
 
 	}
+
 	canv := canvas.NewCanvas(100, 100)
-	color := tpv.Newrgb(12, 242, 93)
+	color := tpv.Newrgb(242, 61, 76)
 
 	for _, p := range hourPoints {
 
@@ -41,15 +42,7 @@ func main() {
 		fmt.Printf("x: %v, y:%v\n", intX, intY)
 
 		canv.WritePixel(intX, intY, color)
+		os.WriteFile("./images/clock.ppm", []byte(canv.ToPPM()), 0666)
 
 	}
-
-	// p := tpv.NewPoint(0, 1, 0)
-
-	// canv.WritePixel(2, 2, color)
-
-	// // fmt.Println(canv)
-
-	os.WriteFile("./images/clock.ppm", []byte(canv.ToPPM()), 0666)
-
 }

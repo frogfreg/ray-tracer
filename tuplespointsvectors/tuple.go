@@ -104,7 +104,7 @@ func Cross(a, b Tuple) Tuple {
 }
 
 func Newrgb(a, b, c float64) Tuple {
-	return Tuple{a, b, c, 0}
+	return Tuple{a / 255, b / 255, c / 255, 0}
 }
 
 func HadamardProd(c1, c2 Tuple) Tuple {

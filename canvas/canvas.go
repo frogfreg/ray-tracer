@@ -3,6 +3,7 @@ package canvas
 import (
 	"errors"
 	"fmt"
+	"math"
 	tpv "ray-tracer/tuplespointsvectors"
 	"strings"
 )
@@ -72,9 +73,9 @@ func (c *Canvas) ToPPM() string {
 			var g int
 			var b int
 
-			// r = int(math.Ceil(col.X * 255))
-			// g = int(math.Ceil(col.Y * 255))
-			// b = int(math.Ceil(col.Z * 255))
+			r = int(math.Ceil(col.X * 255))
+			g = int(math.Ceil(col.Y * 255))
+			b = int(math.Ceil(col.Z * 255))
 
 			if col.X <= 0 {
 				r = 0
@@ -94,10 +95,6 @@ func (c *Canvas) ToPPM() string {
 			if col.Z >= 1 {
 				b = 255
 			}
-
-			r = int((col.X))
-			g = int((col.Y))
-			b = int((col.Z))
 
 			if len(line) != 0 {
 				line += " "
