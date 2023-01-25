@@ -8,11 +8,11 @@ import (
 
 func main() {
 
-	origin := tpv.NewPoint(1, 2, 3)
-	direction := tpv.NewVector(4, 5, 6)
+	origin := tpv.NewPoint(2, 3, 4)
+	direction := tpv.NewVector(1, 0, 0)
 
 	r := rays.NewRay(origin, direction)
 
-	fmt.Println(tpv.SameTuple(origin, r.Origin))
-	fmt.Println(tpv.SameTuple(direction, r.Direction))
+	fmt.Println(r.Position(2.5))
+
 }
