@@ -8,11 +8,14 @@ import (
 
 func main() {
 
-	origin := tpv.NewPoint(2, 3, 4)
-	direction := tpv.NewVector(1, 0, 0)
+	origin := tpv.NewPoint(0, 0, 5)
+	direction := tpv.NewVector(0, 0, 1)
 
 	r := rays.NewRay(origin, direction)
 
-	fmt.Println(r.Position(2.5))
+	s := rays.NewSphere()
 
+	xs := rays.Intersect(s, r)
+
+	fmt.Println(xs)
 }
