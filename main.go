@@ -8,14 +8,20 @@ import (
 
 func main() {
 
-	origin := tpv.NewPoint(0, 0, 5)
+	origin := tpv.NewPoint(0, 0, -5)
 	direction := tpv.NewVector(0, 0, 1)
 
 	r := rays.NewRay(origin, direction)
-
 	s := rays.NewSphere()
 
-	xs := rays.Intersect(s, r)
+	// i1 := *rays.NewIntersection(1, s)
+	// i2 := *rays.NewIntersection(2, s)
 
-	fmt.Println(xs)
+	xs := s.Intersect(r)
+
+	if xs[0].Object == xs[1].Object {
+		fmt.Println("the object is the same sphere")
+	}
+
+	fmt.Printf("%#v\n", xs)
 }
