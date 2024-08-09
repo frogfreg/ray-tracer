@@ -17,13 +17,12 @@ func (t *Tuple) IsVector() bool {
 
 }
 
-func NewPoint(x, y, z float64) Tuple {
+func Point(x, y, z float64) Tuple {
 	return Tuple{X: x, Y: y, Z: z, W: 1.0}
-
 }
-func NewVector(x, y, z float64) Tuple {
-	return Tuple{X: x, Y: y, Z: z, W: 0.0}
 
+func Vector(x, y, z float64) Tuple {
+	return Tuple{X: x, Y: y, Z: z, W: 0.0}
 }
 
 func SameTuple(a, b Tuple) bool {
@@ -97,7 +96,7 @@ func Dot(a, b Tuple) float64 {
 }
 
 func Cross(a, b Tuple) Tuple {
-	return NewVector(a.Y*b.Z-a.Z*b.Y,
+	return Vector(a.Y*b.Z-a.Z*b.Y,
 		a.Z*b.X-a.X*b.Z,
 		a.X*b.Y-a.Y*b.X)
 

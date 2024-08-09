@@ -47,7 +47,7 @@ func NewSphere() *sphere {
 
 	guid := xid.New()
 
-	return &sphere{tpv.NewPoint(0, 0, 0), 1, guid.String()}
+	return &sphere{tpv.Point(0, 0, 0), 1, guid.String()}
 }
 
 func (s *sphere) Intersect(r ray) []intersection {

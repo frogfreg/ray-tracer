@@ -8,8 +8,8 @@ import (
 
 func main() {
 
-	origin := tpv.NewPoint(0, 0, -5)
-	direction := tpv.NewVector(0, 0, 1)
+	origin := tpv.Point(0, 0, -5)
+	direction := tpv.Vector(0, 0, 1)
 
 	r := rays.NewRay(origin, direction)
 	s := rays.NewSphere()

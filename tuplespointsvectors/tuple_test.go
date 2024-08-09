@@ -14,12 +14,12 @@ func TestPointAndVector(t *testing.T) {
 		t.Error("that should be a vector!")
 	}
 
-	point = NewPoint(0, 0, 0)
+	point = Point(0, 0, 0)
 	if !point.IsPoint() {
 		t.Error("that should be a point!")
 	}
 
-	vector = NewVector(0, 0, 0)
+	vector = Vector(0, 0, 0)
 	if !vector.IsVector() {
 		t.Error("that should be a vector!")
 	}
@@ -35,28 +35,28 @@ func TestAdd(t *testing.T) {
 
 }
 func TestSubtract(t *testing.T) {
-	a := NewPoint(3, 2, 1)
-	b := NewPoint(5, 6, 7)
+	a := Point(3, 2, 1)
+	b := Point(5, 6, 7)
 
 	if !SameTuple(Tuple{-2, -4, -6, 0}, Subtract(a, b)) {
 		t.Error("not equal!")
 	}
 
-	b = NewVector(5, 6, 7)
+	b = Vector(5, 6, 7)
 
 	if !SameTuple(Tuple{-2, -4, -6, 1}, Subtract(a, b)) {
 		t.Error("not equal!")
 	}
 
-	a = NewVector(3, 2, 1)
+	a = Vector(3, 2, 1)
 	if !SameTuple(Tuple{-2, -4, -6, 0}, Subtract(a, b)) {
 		t.Error("not equal!")
 	}
 
-	zeroTuple := NewVector(0, 0, 0)
-	a = NewVector(1, -2, 3)
+	zeroTuple := Vector(0, 0, 0)
+	a = Vector(1, -2, 3)
 
-	if !SameTuple(NewVector(-1, 2, -3), Subtract(zeroTuple, a)) {
+	if !SameTuple(Vector(-1, 2, -3), Subtract(zeroTuple, a)) {
 		t.Error("not equal!")
 	}
 
@@ -88,7 +88,7 @@ func TestScDiv(t *testing.T) {
 }
 
 func TestMagnitude(t *testing.T) {
-	v := NewVector(1, 0, 0)
+	v := Vector(1, 0, 0)
 
 	if v.Magnitude() != 1 {
 		t.Error("magnitude should be 1")
