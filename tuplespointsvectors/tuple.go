@@ -42,7 +42,7 @@ func Vector(x, y, z float64) Tuple {
 }
 
 func SameTuple(a, b Tuple) bool {
-	return equals(a.X, b.X) && equals(a.Y, b.Y) && equals(a.Z, b.Z) && equals(a.W, b.W)
+	return Equals(a.X, b.X) && Equals(a.Y, b.Y) && Equals(a.Z, b.Z) && Equals(a.W, b.W)
 }
 
 // func Add(a, b Tuple) (Tuple, error) {
