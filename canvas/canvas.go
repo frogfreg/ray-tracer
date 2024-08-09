@@ -14,6 +14,16 @@ type Canvas struct {
 	Pixels [][]tpv.Tuple
 }
 
+func (c Canvas) PixelAt(x, y int) (tpv.Tuple, error) {
+	if x > c.Width-1 || x < 0 {
+		return tpv.Tuple{}, fmt.Errorf("index out of range")
+	}
+	if y > c.Height-1 || y < 0 {
+		return tpv.Tuple{}, fmt.Errorf("index out of range")
+	}
+	return c.Pixels[y][x], nil
+}
+
 func NewCanvas(width, height int) Canvas {
 
 	canvas := Canvas{}
@@ -37,10 +47,10 @@ func NewCanvas(width, height int) Canvas {
 
 func (c *Canvas) WritePixel(x, y int, color tpv.Tuple) error {
 
-	if y >= c.Height || y <= 0 {
+	if y > c.Height-1 || y < 0 {
 		return errors.New("index out of range")
 	}
-	if x >= c.Width || x <= 0 {
+	if x > c.Width-1 || x < 0 {
 		return errors.New("index out of range")
 	}
 
@@ -61,7 +71,6 @@ func (c *Canvas) ToPPM() string {
 	builder.WriteString("255\n")
 
 	for _, row := range c.Pixels {
-
 		for _, col := range row {
 
 			if len(line)+12 >= 70 {
@@ -107,9 +116,7 @@ func (c *Canvas) ToPPM() string {
 		builder.WriteString(line)
 		builder.WriteString("\n")
 		line = ""
-
 	}
 
 	return builder.String()
-
 }

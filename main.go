@@ -1,27 +1,60 @@
 package main
 
 import (
-	"fmt"
-	"ray-tracer/rays"
+	"math"
+	"os"
+	"ray-tracer/canvas"
 	tpv "ray-tracer/tuplespointsvectors"
 )
 
+type projectile struct {
+	position, velocity tpv.Tuple
+}
+
+type environment struct {
+	gravity, wind tpv.Tuple
+}
+
+func tick(e environment, p projectile) projectile {
+
+	newProj := projectile{}
+
+	newProj.position = tpv.Add(p.position, p.velocity)
+
+	newProj.velocity = tpv.Add(tpv.Add(p.velocity, e.gravity), e.wind)
+
+	return newProj
+
+}
+
 func main() {
 
-	origin := tpv.Point(0, 0, -5)
-	direction := tpv.Vector(0, 0, 1)
+	p := projectile{tpv.Point(0, 1, 0), tpv.ScMult(tpv.Normalized(tpv.Vector(1, 1.8, 0)), 11.25)}
+	e := environment{tpv.Vector(0, -0.1, 0), tpv.Vector(-0.01, 0, 0)}
 
-	r := rays.NewRay(origin, direction)
-	s := rays.NewSphere()
+	c := canvas.NewCanvas(900, 550)
+	color := tpv.Color(0, 1, 0)
 
-	// i1 := *rays.NewIntersection(1, s)
-	// i2 := *rays.NewIntersection(2, s)
+	c.WritePixel(int(math.Ceil(p.position.X)), c.Height-int(math.Ceil(p.position.Y)), color)
 
-	xs := s.Intersect(r)
+	for {
 
-	if xs[0].Object == xs[1].Object {
-		fmt.Println("the object is the same sphere")
+		if p.position.Y <= 0 {
+			break
+		}
+
+		// fmt.Printf("Current position %v\n", p.position)
+
+		p = tick(e, p)
+
+		x := int(math.Ceil(p.position.X))
+		y := int(math.Ceil(p.position.Y))
+
+		c.WritePixel(x, c.Height-y, color)
 	}
 
-	fmt.Printf("%#v\n", xs)
+	header := c.ToPPM()
+
+	os.WriteFile("./projectile.ppm", []byte(header), 0666)
+
 }

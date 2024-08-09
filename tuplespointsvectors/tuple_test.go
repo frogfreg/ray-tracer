@@ -1,7 +1,6 @@
 package tuplespointsvectors
 
 import (
-	"fmt"
 	"math"
 	"testing"
 )
@@ -177,11 +176,6 @@ func TestHadamardProd(t *testing.T) {
 	c2 := Vector(0.9, 1, 0.1)
 
 	expected := Vector(0.9, 0.2, 0.04)
-
-	fmt.Printf("c1: %v\n", c1)
-	fmt.Printf("c2: %v\n", c2)
-	fmt.Printf("prod: %v\n", HadamardProd(c1, c2))
-	fmt.Printf("expected: %v\n", expected)
 
 	if !SameTuple(expected, HadamardProd(c1, c2)) {
 		t.Error("not the same color!")
