@@ -1,9 +1,26 @@
 package tuplespointsvectors
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type Tuple struct {
 	X, Y, Z, W float64
+}
+
+func (t Tuple) String() string {
+	return fmt.Sprintf("x: %.8f, y: %.8f, z: %.8f, w: %.8f", t.X, t.Y, t.Z, t.W)
+}
+
+func (c Tuple) Red() int {
+	return int(c.X)
+}
+func (c Tuple) Green() int {
+	return int(c.Y)
+}
+func (c Tuple) Blue() int {
+	return int(c.Z)
 }
 
 func (t *Tuple) IsPoint() bool {
@@ -26,9 +43,7 @@ func Vector(x, y, z float64) Tuple {
 }
 
 func SameTuple(a, b Tuple) bool {
-
-	return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W
-
+	return equals(a.X, b.X) && equals(a.Y, b.Y) && equals(a.Z, b.Z) && equals(a.W, b.W)
 }
 
 // func Add(a, b Tuple) (Tuple, error) {
@@ -102,7 +117,7 @@ func Cross(a, b Tuple) Tuple {
 
 }
 
-func Newrgb(a, b, c float64) Tuple {
+func Color(a, b, c float64) Tuple {
 	return Tuple{a / 255, b / 255, c / 255, 0}
 }
 
