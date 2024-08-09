@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"math"
+
 	tpv "ray-tracer/tuplespointsvectors"
 
 	"github.com/shopspring/decimal"
@@ -24,11 +25,9 @@ func (m matrix) Shape() (int, int) {
 	}
 
 	return lenRows, lenColumns
-
 }
 
 func NewMatrix(rows, columns int) matrix {
-
 	if rows <= 0 || columns <= 0 {
 		return matrix{}
 	}
@@ -43,7 +42,6 @@ func NewMatrix(rows, columns int) matrix {
 }
 
 func NewIdentityMatrix(rows, columns int) matrix {
-
 	if rows != columns {
 		return matrix{}
 	}
@@ -62,7 +60,6 @@ func NewIdentityMatrix(rows, columns int) matrix {
 }
 
 func AreEqual(a, b matrix) bool {
-
 	if len(a) == 0 && len(b) == 0 {
 		return true
 	}
@@ -77,7 +74,6 @@ func AreEqual(a, b matrix) bool {
 
 	for i, row := range a {
 		for j := range row {
-
 			if !same(a[i][j], b[i][j]) {
 				return false
 			}
@@ -85,11 +81,9 @@ func AreEqual(a, b matrix) bool {
 	}
 
 	return true
-
 }
 
 func Multiply(a, b matrix) matrix {
-
 	newRows, _ := a.Shape()
 	_, newCols := b.Shape()
 
@@ -101,16 +95,13 @@ func Multiply(a, b matrix) matrix {
 				a[rowIndex][1].Mul(b[1][colIndex]),
 				a[rowIndex][2].Mul(b[2][colIndex]),
 				a[rowIndex][3].Mul(b[3][colIndex]))
-
 		}
 	}
 
 	return new
-
 }
 
 func TupleMultiply(a tpv.Tuple, b matrix) tpv.Tuple {
-
 	var tempSlice [4]float64
 
 	for rowIndex, row := range b {
@@ -120,11 +111,9 @@ func TupleMultiply(a tpv.Tuple, b matrix) tpv.Tuple {
 	}
 
 	return tpv.Tuple{X: tempSlice[0], Y: tempSlice[1], Z: tempSlice[2], W: tempSlice[3]}
-
 }
 
 func Transpose(m matrix) matrix {
-
 	rows, cols := m.Shape()
 
 	new := NewMatrix(cols, rows)
@@ -139,7 +128,6 @@ func Transpose(m matrix) matrix {
 }
 
 func Submatrix(m matrix, delRow, delCol int) matrix {
-
 	new := matrix{}
 
 	for rowIndex := 0; rowIndex < len(m); rowIndex++ {
@@ -155,13 +143,10 @@ func Submatrix(m matrix, delRow, delCol int) matrix {
 	}
 
 	return new
-
 }
 
 func Minor(m matrix, delRow, delCol int) decimal.Decimal {
-
 	return Submatrix(m, delRow, delCol).Determinant()
-
 }
 
 func Cofactor(m matrix, delRow, delCol int) decimal.Decimal {
@@ -175,23 +160,19 @@ func Cofactor(m matrix, delRow, delCol int) decimal.Decimal {
 }
 
 func (m matrix) Determinant() decimal.Decimal {
-
 	rows, cols := m.Shape()
 
 	if rows == 2 && cols == 2 {
 		return m[0][0].Mul(m[1][1]).Sub(m[0][1].Mul(m[1][0]))
-
 	}
 
 	det := decimal.Zero
 
 	for colIndex, num := range m[0] {
-
 		det = det.Add((num.Mul(Cofactor(m, 0, colIndex))))
 	}
 
 	return det
-
 }
 
 func (m matrix) IsInvertible() bool {
@@ -199,7 +180,6 @@ func (m matrix) IsInvertible() bool {
 }
 
 func (m matrix) Inverse() matrix {
-
 	det := m.Determinant()
 
 	rows, cols := m.Shape()
@@ -221,7 +201,6 @@ func (m matrix) Inverse() matrix {
 	}
 
 	return new
-
 }
 
 func Translation(x, y, z float64) matrix {
@@ -233,6 +212,7 @@ func Translation(x, y, z float64) matrix {
 
 	return new
 }
+
 func (m matrix) Translate(x, y, z float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
@@ -253,8 +233,8 @@ func Scaling(x, y, z float64) matrix {
 	new[2][2] = decimal.NewFromFloat(z)
 
 	return new
-
 }
+
 func (m matrix) Scale(x, y, z float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
@@ -265,7 +245,6 @@ func (m matrix) Scale(x, y, z float64) matrix {
 	res := Multiply(new, m)
 
 	return res
-
 }
 
 func RotationX(radians float64) matrix {
@@ -277,8 +256,8 @@ func RotationX(radians float64) matrix {
 	new[2][2] = decimal.NewFromFloat(math.Cos(radians))
 
 	return new
-
 }
+
 func (m matrix) RotateX(radians float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
@@ -290,7 +269,6 @@ func (m matrix) RotateX(radians float64) matrix {
 	res := Multiply(new, m)
 
 	return res
-
 }
 
 func RotationY(radians float64) matrix {
@@ -302,8 +280,8 @@ func RotationY(radians float64) matrix {
 	new[2][2] = decimal.NewFromFloat(math.Cos(radians))
 
 	return new
-
 }
+
 func (m matrix) RotateY(radians float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
@@ -315,7 +293,6 @@ func (m matrix) RotateY(radians float64) matrix {
 	res := Multiply(new, m)
 
 	return res
-
 }
 
 func RotationZ(radians float64) matrix {
@@ -327,8 +304,8 @@ func RotationZ(radians float64) matrix {
 	new[1][1] = decimal.NewFromFloat(math.Cos(radians))
 
 	return new
-
 }
+
 func (m matrix) RotateZ(radians float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
@@ -340,7 +317,6 @@ func (m matrix) RotateZ(radians float64) matrix {
 	res := Multiply(new, m)
 
 	return res
-
 }
 
 func Shearing(xy, xz, yx, yz, zx, zy float64) matrix {
@@ -354,8 +330,8 @@ func Shearing(xy, xz, yx, yz, zx, zy float64) matrix {
 	new[2][1] = decimal.NewFromFloat(zy)
 
 	return new
-
 }
+
 func (m matrix) Shear(xy, xz, yx, yz, zx, zy float64) matrix {
 	new := NewIdentityMatrix(4, 4)
 
@@ -369,5 +345,4 @@ func (m matrix) Shear(xy, xz, yx, yz, zx, zy float64) matrix {
 	res := Multiply(new, m)
 
 	return res
-
 }

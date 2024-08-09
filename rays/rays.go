@@ -29,7 +29,6 @@ type intersection struct {
 }
 
 func NewRay(origin, direction tpv.Tuple) ray {
-
 	nr := ray{origin, direction}
 
 	return nr
@@ -44,7 +43,6 @@ func NewIntersection(t float64, i intersectable) *intersection {
 }
 
 func NewSphere() *sphere {
-
 	guid := xid.New()
 
 	return &sphere{tpv.Point(0, 0, 0), 1, guid.String()}

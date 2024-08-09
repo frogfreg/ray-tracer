@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 	"os"
+
 	"ray-tracer/canvas"
 	tpv "ray-tracer/tuplespointsvectors"
 )
@@ -16,7 +17,6 @@ type environment struct {
 }
 
 func tick(e environment, p projectile) projectile {
-
 	newProj := projectile{}
 
 	newProj.position = tpv.Add(p.position, p.velocity)
@@ -24,11 +24,9 @@ func tick(e environment, p projectile) projectile {
 	newProj.velocity = tpv.Add(tpv.Add(p.velocity, e.gravity), e.wind)
 
 	return newProj
-
 }
 
 func main() {
-
 	p := projectile{tpv.Point(0, 1, 0), tpv.ScMult(tpv.Normalized(tpv.Vector(1, 1.8, 0)), 11.25)}
 	e := environment{tpv.Vector(0, -0.1, 0), tpv.Vector(-0.01, 0, 0)}
 
@@ -55,6 +53,5 @@ func main() {
 
 	header := c.ToPPM()
 
-	os.WriteFile("./projectile.ppm", []byte(header), 0666)
-
+	os.WriteFile("./projectile.ppm", []byte(header), 0o666)
 }

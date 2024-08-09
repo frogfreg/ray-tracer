@@ -119,5 +119,4 @@ func TestPPMHeader(t *testing.T) {
 	if expected != ppm {
 		t.Errorf("%q, should be equal to %q", expected, ppm)
 	}
-
 }

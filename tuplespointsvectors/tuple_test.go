@@ -6,7 +6,6 @@ import (
 )
 
 func TestPointAndVector(t *testing.T) {
-
 	point := Tuple{4.3, -4.2, 3.1, 1.0}
 	if !point.IsPoint() {
 		t.Error("that should be a point!")
@@ -35,8 +34,8 @@ func TestAdd(t *testing.T) {
 	if !SameTuple(Tuple{1, 1, 6, 1}, Add(a, b)) {
 		t.Error("not equal!")
 	}
-
 }
+
 func TestSubtract(t *testing.T) {
 	a := Point(3, 2, 1)
 	b := Point(5, 6, 7)
@@ -62,7 +61,6 @@ func TestSubtract(t *testing.T) {
 	if !SameTuple(Vector(-1, 2, -3), Subtract(zeroTuple, a)) {
 		t.Error("not equal!")
 	}
-
 }
 
 func TestNegated(t *testing.T) {
@@ -168,7 +166,6 @@ func TestColors(t *testing.T) {
 	if !SameTuple(ScMult(c1, 2), Color(0.4, 0.6, 0.8)) {
 		t.Error("not the same color!")
 	}
-
 }
 
 func TestHadamardProd(t *testing.T) {

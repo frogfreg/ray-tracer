@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	tpv "ray-tracer/tuplespointsvectors"
 	"strings"
+
+	tpv "ray-tracer/tuplespointsvectors"
 )
 
 type Canvas struct {
@@ -25,7 +26,6 @@ func (c Canvas) PixelAt(x, y int) (tpv.Tuple, error) {
 }
 
 func NewCanvas(width, height int) Canvas {
-
 	canvas := Canvas{}
 
 	canvas.Width = width
@@ -34,19 +34,15 @@ func NewCanvas(width, height int) Canvas {
 	pixels := make([][]tpv.Tuple, height)
 
 	for i := range pixels {
-
 		pixels[i] = make([]tpv.Tuple, width)
-
 	}
 
 	canvas.Pixels = pixels
 
 	return canvas
-
 }
 
 func (c *Canvas) WritePixel(x, y int, color tpv.Tuple) error {
-
 	if y > c.Height-1 || y < 0 {
 		return errors.New("index out of range")
 	}
@@ -56,11 +52,9 @@ func (c *Canvas) WritePixel(x, y int, color tpv.Tuple) error {
 
 	c.Pixels[y][x] = color
 	return nil
-
 }
 
 func (c *Canvas) ToPPM() string {
-
 	var builder strings.Builder
 	line := ""
 
