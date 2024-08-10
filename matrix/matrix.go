@@ -2,6 +2,8 @@ package matrix
 
 import (
 	"math"
+	"strconv"
+	"strings"
 
 	tpv "ray-tracer/tuplespointsvectors"
 )
@@ -337,4 +339,31 @@ func (m matrix) Shear(xy, xz, yx, yz, zx, zy float64) matrix {
 	res := Multiply(new, m)
 
 	return res
+}
+
+func MatrixFromString(matString string) (matrix, error) {
+	m := matrix{}
+
+	for _, row := range strings.Split(matString, "\n") {
+		if "" == strings.TrimSpace(row) {
+			continue
+		}
+		var nums []float64
+
+		for _, numString := range strings.Split(strings.ReplaceAll(row, " ", ""), "|") {
+			if numString == "" {
+				continue
+			}
+			num, err := strconv.ParseFloat(numString, 64)
+			if err != nil {
+				return nil, err
+			}
+
+			nums = append(nums, num)
+		}
+
+		m = append(m, nums)
+	}
+
+	return m, nil
 }
