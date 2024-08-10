@@ -367,3 +367,17 @@ func MatrixFromString(matString string) (matrix, error) {
 
 	return m, nil
 }
+
+func (m matrix) String() string {
+	s := ""
+
+	for _, row := range m {
+		line := ""
+		for _, col := range row {
+			line += strconv.FormatFloat(col, 'f', -1, 64) + " "
+		}
+		s += line + "\n"
+	}
+
+	return "\n" + strings.TrimSpace(s)
+}
