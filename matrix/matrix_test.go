@@ -516,3 +516,23 @@ func TestInverse(t *testing.T) {
 		t.Error("matrices should be equal")
 	}
 }
+
+func TestTranslation(t *testing.T) {
+	trans := Translation(5, -3, 2)
+	p := tpv.Point(-3, 4, 5)
+
+	if !tpv.SameTuple(TupleMultiply(p, trans), tpv.Point(2, 1, 7)) {
+		t.Error("tuples should be equal")
+	}
+
+	inv := trans.Inverse()
+	if !tpv.SameTuple(TupleMultiply(p, inv), tpv.Point(-8, 7, 3)) {
+		t.Error("tuples should be equal")
+	}
+
+	v := tpv.Vector(-3, 4, 5)
+
+	if !tpv.SameTuple(TupleMultiply(v, trans), v) {
+		t.Error("tuples should be equal")
+	}
+}
