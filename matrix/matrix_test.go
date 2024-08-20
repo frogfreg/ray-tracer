@@ -536,3 +536,32 @@ func TestTranslation(t *testing.T) {
 		t.Error("tuples should be equal")
 	}
 }
+
+func TestScaling(t *testing.T) {
+	scaleMat := Scaling(2, 3, 4)
+
+	p := tpv.Point(-4, 6, 8)
+
+	if !tpv.SameTuple(tpv.Point(-8, 18, 32), TupleMultiply(p, scaleMat)) {
+		t.Error("points should equal")
+	}
+
+	v := tpv.Vector(-4, 6, 8)
+
+	if !tpv.SameTuple(tpv.Vector(-8, 18, 32), TupleMultiply(v, scaleMat)) {
+		t.Error("points should equal")
+	}
+
+	inv := scaleMat.Inverse()
+	if !tpv.SameTuple(tpv.Vector(-2, 2, 2), TupleMultiply(v, inv)) {
+		t.Error("points should equal")
+	}
+
+	// reflection
+	scaleMat = Scaling(-1, 1, 1)
+	p = tpv.Point(2, 3, 4)
+
+	if !tpv.SameTuple(tpv.Point(-2, 3, 4), TupleMultiply(p, scaleMat)) {
+		t.Error("points should equal")
+	}
+}
