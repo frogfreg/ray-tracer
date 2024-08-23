@@ -1,6 +1,7 @@
 package matrix
 
 import (
+	"fmt"
 	"math"
 	"testing"
 
@@ -655,5 +656,31 @@ func TestRotationZ(t *testing.T) {
 	result = TupleMultiply(p, inv)
 	if !tpv.SameTuple(result, expected) {
 		t.Errorf("Inverse rotation failed. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestShearing(t *testing.T) {
+	p := tpv.Point(2, 3, 4)
+
+	tests := []struct {
+		shearTrans matrix
+		expected   tpv.Tuple
+	}{
+		{shearTrans: Shearing(1, 0, 0, 0, 0, 0), expected: tpv.Point(5, 3, 4)},
+		{shearTrans: Shearing(0, 1, 0, 0, 0, 0), expected: tpv.Point(6, 3, 4)},
+		{shearTrans: Shearing(0, 0, 1, 0, 0, 0), expected: tpv.Point(2, 5, 4)},
+		{shearTrans: Shearing(0, 0, 0, 1, 0, 0), expected: tpv.Point(2, 7, 4)},
+		{shearTrans: Shearing(0, 0, 0, 0, 1, 0), expected: tpv.Point(2, 3, 6)},
+		{shearTrans: Shearing(0, 0, 0, 0, 0, 1), expected: tpv.Point(2, 3, 7)},
+	}
+
+	for i, ts := range tests {
+		t.Run(fmt.Sprintf("case %v", i), func(t *testing.T) {
+			result := TupleMultiply(p, ts.shearTrans)
+
+			if !tpv.SameTuple(result, ts.expected) {
+				t.Errorf("expected %v, but got %v", ts.expected, result)
+			}
+		})
 	}
 }
