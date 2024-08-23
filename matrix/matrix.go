@@ -345,7 +345,7 @@ func MatrixFromString(matString string) (matrix, error) {
 	m := matrix{}
 
 	for _, row := range strings.Split(matString, "\n") {
-		if "" == strings.TrimSpace(row) {
+		if strings.TrimSpace(row) == "" {
 			continue
 		}
 		var nums []float64

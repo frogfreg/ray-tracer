@@ -1,6 +1,7 @@
 package matrix
 
 import (
+	"math"
 	"testing"
 
 	tpv "ray-tracer/tuplespointsvectors"
@@ -563,5 +564,96 @@ func TestScaling(t *testing.T) {
 
 	if !tpv.SameTuple(tpv.Point(-2, 3, 4), TupleMultiply(p, scaleMat)) {
 		t.Error("points should equal")
+	}
+}
+
+func TestRotationX(t *testing.T) {
+	p := tpv.Point(0, 1, 0)
+	halfQuarter := RotationX(math.Pi / 4)
+	fullQuarter := RotationX(math.Pi / 2)
+
+	sqrt2Over2 := math.Sqrt(2) / 2
+
+	// Test half-quarter rotation
+	expected := tpv.Point(0, sqrt2Over2, sqrt2Over2)
+	result := TupleMultiply(p, halfQuarter)
+	if !tpv.SameTuple(expected, result) {
+		t.Errorf("Half-quarter rotation failed. Expected %v, got %v", expected, result)
+	}
+
+	// Test full-quarter rotation
+	expected = tpv.Point(0, 0, 1)
+	result = TupleMultiply(p, fullQuarter)
+	if !tpv.SameTuple(expected, result) {
+		t.Errorf("Full-quarter rotation failed. Expected %v, got %v", expected, result)
+	}
+
+	inv := halfQuarter.Inverse()
+	expected = tpv.Point(0, sqrt2Over2, -sqrt2Over2)
+
+	result = TupleMultiply(p, inv)
+
+	if !tpv.SameTuple(result, expected) {
+		t.Errorf("Full-quarter rotation failed. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestRotationY(t *testing.T) {
+	p := tpv.Point(0, 0, 1)
+	halfQuarter := RotationY(math.Pi / 4)
+	fullQuarter := RotationY(math.Pi / 2)
+
+	sqrt2Over2 := math.Sqrt(2) / 2
+
+	// Test half-quarter rotation
+	expected := tpv.Point(sqrt2Over2, 0, sqrt2Over2)
+	result := TupleMultiply(p, halfQuarter)
+	if !tpv.SameTuple(expected, result) {
+		t.Errorf("Half-quarter rotation failed. Expected %v, got %v", expected, result)
+	}
+
+	// Test full-quarter rotation
+	expected = tpv.Point(1, 0, 0)
+	result = TupleMultiply(p, fullQuarter)
+	if !tpv.SameTuple(expected, result) {
+		t.Errorf("Full-quarter rotation failed. Expected %v, got %v", expected, result)
+	}
+
+	// Test inverse rotation
+	inv := halfQuarter.Inverse()
+	expected = tpv.Point(-sqrt2Over2, 0, sqrt2Over2)
+	result = TupleMultiply(p, inv)
+	if !tpv.SameTuple(result, expected) {
+		t.Errorf("Inverse rotation failed. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestRotationZ(t *testing.T) {
+	p := tpv.Point(0, 1, 0)
+	halfQuarter := RotationZ(math.Pi / 4)
+	fullQuarter := RotationZ(math.Pi / 2)
+
+	sqrt2Over2 := math.Sqrt(2) / 2
+
+	// Test half-quarter rotation
+	expected := tpv.Point(-sqrt2Over2, sqrt2Over2, 0)
+	result := TupleMultiply(p, halfQuarter)
+	if !tpv.SameTuple(expected, result) {
+		t.Errorf("Half-quarter rotation failed. Expected %v, got %v", expected, result)
+	}
+
+	// Test full-quarter rotation
+	expected = tpv.Point(-1, 0, 0)
+	result = TupleMultiply(p, fullQuarter)
+	if !tpv.SameTuple(expected, result) {
+		t.Errorf("Full-quarter rotation failed. Expected %v, got %v", expected, result)
+	}
+
+	// Test inverse rotation
+	inv := halfQuarter.Inverse()
+	expected = tpv.Point(sqrt2Over2, sqrt2Over2, 0)
+	result = TupleMultiply(p, inv)
+	if !tpv.SameTuple(result, expected) {
+		t.Errorf("Inverse rotation failed. Expected %v, got %v", expected, result)
 	}
 }
