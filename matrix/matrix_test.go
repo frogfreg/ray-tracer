@@ -684,3 +684,33 @@ func TestShearing(t *testing.T) {
 		})
 	}
 }
+
+func TestChaining(t *testing.T) {
+	p := tpv.Point(1, 0, 1)
+	aMat := RotationX(math.Pi / 2)
+	bMat := Scaling(5, 5, 5)
+	cMat := Translation(10, 5, 7)
+
+	p2 := TupleMultiply(p, aMat)
+	if !tpv.SameTuple(p2, tpv.Point(1, -1, 0)) {
+		t.Error("tuples should be equal")
+	}
+
+	p3 := TupleMultiply(p2, bMat)
+	if !tpv.SameTuple(p3, tpv.Point(5, -5, 0)) {
+		t.Error("tuples should be equal")
+	}
+
+	p4 := TupleMultiply(p3, cMat)
+	if !tpv.SameTuple(p4, tpv.Point(15, 0, 7)) {
+		t.Error("tuples should be equal")
+	}
+
+	tMat := aMat.Scale(5, 5, 5).Translate(10, 5, 7)
+
+	result := TupleMultiply(p, tMat)
+
+	if !tpv.SameTuple(result, p4) {
+		t.Error("tuples should be equal")
+	}
+}
