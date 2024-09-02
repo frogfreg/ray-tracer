@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewCanvas(t *testing.T) {
-	c := NewCanvas(10, 20)
+	c := New(10, 20)
 
 	if c.Width != 10 || c.Height != 20 {
 		t.Error("values are wrong")
@@ -23,7 +23,7 @@ func TestNewCanvas(t *testing.T) {
 }
 
 func TestWritePixel(t *testing.T) {
-	c := NewCanvas(10, 20)
+	c := New(10, 20)
 
 	red := tpv.Color(1, 0, 0)
 
@@ -67,7 +67,7 @@ func TestWritePixel(t *testing.T) {
 }
 
 func TestPPMHeader(t *testing.T) {
-	c := NewCanvas(5, 3)
+	c := New(5, 3)
 
 	c1 := tpv.Color(1.5, 0, 0)
 	c2 := tpv.Color(0, 0.5, 0)
@@ -97,7 +97,7 @@ func TestPPMHeader(t *testing.T) {
 		t.Errorf("%q, should be equal to %q", expected, ppm)
 	}
 
-	c = NewCanvas(10, 2)
+	c = New(10, 2)
 
 	for rIndex, row := range c.Pixels {
 		for cIndex := range row {

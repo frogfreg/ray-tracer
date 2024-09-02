@@ -25,7 +25,7 @@ func (c Canvas) PixelAt(x, y int) (tpv.Tuple, error) {
 	return c.Pixels[y][x], nil
 }
 
-func NewCanvas(width, height int) Canvas {
+func New(width, height int) Canvas {
 	canvas := Canvas{}
 
 	canvas.Width = width
