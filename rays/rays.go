@@ -1,6 +1,7 @@
 package rays
 
 import (
+	"fmt"
 	"math"
 
 	tpv "ray-tracer/tuplespointsvectors"
@@ -28,10 +29,16 @@ type intersection struct {
 	Object intersectable
 }
 
-func NewRay(origin, direction tpv.Tuple) ray {
+func New(origin, direction tpv.Tuple) (ray, error) {
+	if !origin.IsPoint() {
+		return ray{}, fmt.Errorf("origin must be a point")
+	}
+	if !direction.IsVector() {
+		return ray{}, fmt.Errorf("direction must be a vector")
+	}
 	nr := ray{origin, direction}
 
-	return nr
+	return nr, nil
 }
 
 func (r ray) Position(t float64) tpv.Tuple {
