@@ -14,7 +14,7 @@ type ray struct {
 }
 
 type intersectable interface {
-	Intersect(ray) []intersection
+	Intersect(ray) collection
 }
 
 type sphere struct {
@@ -22,6 +22,8 @@ type sphere struct {
 	radio  float64
 	id     string
 }
+
+type collection []intersection
 
 // the object field will more than likely change in the future
 type intersection struct {
@@ -55,7 +57,7 @@ func NewSphere() *sphere {
 	return &sphere{tpv.Point(0, 0, 0), 1, guid.String()}
 }
 
-func (s *sphere) Intersect(r ray) []intersection {
+func (s *sphere) Intersect(r ray) collection {
 	sphereToRay := tpv.Subtract(r.Origin, s.center)
 
 	a := tpv.Dot(r.Direction, r.Direction)
@@ -71,9 +73,23 @@ func (s *sphere) Intersect(r ray) []intersection {
 	t1 := (-b - (math.Sqrt(discriminant))) / (2 * a)
 	t2 := (-b + (math.Sqrt(discriminant))) / (2 * a)
 
-	return Intersections(intersection{t1, s}, intersection{t2, s})
+	return NewCollection(intersection{t1, s}, intersection{t2, s})
 }
 
-func Intersections(inters ...intersection) []intersection {
+func NewCollection(inters ...intersection) collection {
 	return append([]intersection{}, inters...)
+}
+
+func (c collection) Hit() (intersection, error) {
+	hit := NewIntersection(math.MaxFloat64, nil)
+	err := fmt.Errorf("no valid hit found in collection")
+
+	for _, inter := range c {
+		if inter.TValue >= 0 && inter.TValue < hit.TValue {
+			hit = inter
+			err = nil
+		}
+	}
+
+	return hit, err
 }

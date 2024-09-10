@@ -115,7 +115,7 @@ func TestIntersections(t *testing.T) {
 	i1 := NewIntersection(1, s)
 	i2 := NewIntersection(2, s)
 
-	xs := Intersections(i1, i2)
+	xs := NewCollection(i1, i2)
 
 	expected := 2
 
@@ -128,5 +128,41 @@ func TestIntersections(t *testing.T) {
 	}
 	if xs[1].TValue != 2 {
 		t.Error("wrong value")
+	}
+}
+
+func TestHit(t *testing.T) {
+	s := NewSphere()
+
+	tests := []struct {
+		col         collection
+		expected    intersection
+		errExpected bool
+	}{
+		{col: NewCollection(NewIntersection(1, s), NewIntersection(2, s)), expected: NewIntersection(1, s)},
+		{col: NewCollection(NewIntersection(-1, s), NewIntersection(1, s)), expected: NewIntersection(1, s)},
+		{col: NewCollection(NewIntersection(-2, s), NewIntersection(-1, s)), expected: intersection{}, errExpected: true},
+		{col: NewCollection(NewIntersection(5, s), NewIntersection(7, s), NewIntersection(-3, s), NewIntersection(2, s)), expected: NewIntersection(2, s)},
+	}
+
+	for ind, tt := range tests {
+		t.Run(fmt.Sprintf("test #%v", ind+1), func(t *testing.T) {
+			i, err := tt.col.Hit()
+			if err != nil && !tt.errExpected {
+				t.Error(err)
+			}
+
+			if tt.errExpected && err == nil {
+				t.Error("expected error, but got nil")
+			}
+
+			if tt.errExpected {
+				return
+			}
+
+			if i.TValue != tt.expected.TValue {
+				t.Errorf("expected %v, but got %v", tt.expected, i)
+			}
+		})
 	}
 }
