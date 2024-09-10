@@ -1,4 +1,4 @@
-package rays
+package raysandspheres
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ type intersection struct {
 	Object intersectable
 }
 
-func New(origin, direction tpv.Tuple) (ray, error) {
+func NewRay(origin, direction tpv.Tuple) (ray, error) {
 	if !origin.IsPoint() {
 		return ray{}, fmt.Errorf("origin must be a point")
 	}
