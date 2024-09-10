@@ -85,12 +85,48 @@ func TestIntersect(t *testing.T) {
 				t.Error("there should be 2 intersections")
 			}
 
-			if xs[0].T != tt.expected[0] {
+			if xs[0].TValue != tt.expected[0] {
 				t.Error("wrong value")
 			}
-			if xs[0].T != tt.expected[0] {
+			if xs[0].TValue != tt.expected[0] {
 				t.Error("wrong value")
 			}
 		})
+	}
+}
+
+func TestNewIntersection(t *testing.T) {
+	s := NewSphere()
+
+	i := NewIntersection(3.5, s)
+
+	if i.TValue != 3.5 {
+		t.Errorf("expected 3.5, but got %v", i.TValue)
+	}
+
+	if i.Object != s {
+		t.Error("objects are not equal")
+	}
+}
+
+func TestIntersections(t *testing.T) {
+	s := NewSphere()
+
+	i1 := NewIntersection(1, s)
+	i2 := NewIntersection(2, s)
+
+	xs := Intersections(i1, i2)
+
+	expected := 2
+
+	if len(xs) != expected {
+		t.Errorf("expected %v, but got %v", expected, len(xs))
+	}
+
+	if xs[0].TValue != 1 {
+		t.Error("wrong value")
+	}
+	if xs[1].TValue != 2 {
+		t.Error("wrong value")
 	}
 }

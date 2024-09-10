@@ -25,7 +25,7 @@ type sphere struct {
 
 // the object field will more than likely change in the future
 type intersection struct {
-	T      float64
+	TValue float64
 	Object intersectable
 }
 
@@ -45,8 +45,8 @@ func (r ray) Position(t float64) tpv.Tuple {
 	return tpv.Add(r.Origin, tpv.ScMult(r.Direction, t))
 }
 
-func NewIntersection(t float64, i intersectable) *intersection {
-	return &intersection{t, i}
+func NewIntersection(tValue float64, i intersectable) intersection {
+	return intersection{tValue, i}
 }
 
 func NewSphere() *sphere {
