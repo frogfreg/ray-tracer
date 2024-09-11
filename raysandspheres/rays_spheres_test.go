@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"ray-tracer/matrix"
 	tpv "ray-tracer/tuplespointsvectors"
 )
 
@@ -56,12 +57,15 @@ func TestIntersect(t *testing.T) {
 		s               sphere
 		expected        []float64
 		shouldIntersect bool
+		transformMat    matrix.Matrix
 	}{
 		{p: tpv.Point(0, 0, -5), v: tpv.Vector(0, 0, 1), s: *NewSphere(), expected: []float64{4, 6}, shouldIntersect: true},
 		{p: tpv.Point(0, 1, -5), v: tpv.Vector(0, 0, 1), s: *NewSphere(), expected: []float64{5, 5}, shouldIntersect: true},
 		{p: tpv.Point(0, 2, -5), v: tpv.Vector(0, 0, 1), s: *NewSphere(), expected: []float64{}, shouldIntersect: false},
 		{p: tpv.Point(0, 0, 0), v: tpv.Vector(0, 0, 1), s: *NewSphere(), expected: []float64{-1.0, 1, 0}, shouldIntersect: true},
 		{p: tpv.Point(0, 0, 5), v: tpv.Vector(0, 0, 1), s: *NewSphere(), expected: []float64{-6, -4}, shouldIntersect: true},
+		{p: tpv.Point(0, 0, -5), v: tpv.Vector(0, 0, 1), s: *NewSphere(), expected: []float64{3, 7}, shouldIntersect: true, transformMat: matrix.Scaling(2, 2, 2)},
+		{p: tpv.Point(0, 0, -5), v: tpv.Vector(0, 0, 1), s: *NewSphere(), expected: []float64{}, shouldIntersect: false, transformMat: matrix.Translation(5, 0, 0)},
 	}
 
 	for i, tt := range tests {
@@ -71,7 +75,15 @@ func TestIntersect(t *testing.T) {
 				t.Error(err)
 			}
 
+			if tt.transformMat != nil {
+				tt.s.SetTransform(tt.transformMat)
+			}
+
 			xs := tt.s.Intersect(r)
+
+			if r.Origin != tt.p || r.Direction != tt.v {
+				t.Errorf("expected %v, but got %v", ray{tt.p, tt.v}, r)
+			}
 
 			if !tt.shouldIntersect && len(xs) > 0 {
 				t.Error("no intersection should happen")
@@ -164,5 +176,47 @@ func TestHit(t *testing.T) {
 				t.Errorf("expected %v, but got %v", tt.expected, i)
 			}
 		})
+	}
+}
+
+func TestTransform(t *testing.T) {
+	tests := []struct {
+		matTransform matrix.Matrix
+		origin       tpv.Tuple
+		direction    tpv.Tuple
+		expected     ray
+	}{
+		{matTransform: matrix.Translation(3, 4, 5), origin: tpv.Point(1, 2, 3), direction: tpv.Vector(0, 1, 0), expected: ray{tpv.Point(4, 6, 8), tpv.Vector(0, 1, 0)}},
+		{matTransform: matrix.Scaling(2, 3, 4), origin: tpv.Point(1, 2, 3), direction: tpv.Vector(0, 1, 0), expected: ray{tpv.Point(2, 6, 12), tpv.Vector(0, 3, 0)}},
+	}
+
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("test #%v", i+1), func(t *testing.T) {
+			r, err := NewRay(tt.origin, tt.direction)
+			if err != nil {
+				t.Error(err)
+			}
+
+			got := r.Transform(tt.matTransform)
+
+			if got != tt.expected {
+				t.Errorf("expected %v, but got %v", tt.expected, got)
+			}
+		})
+	}
+}
+
+func TestSetTransform(t *testing.T) {
+	s := NewSphere()
+
+	if !matrix.AreEqual(s.transformMat, matrix.NewIdentityMatrix(4, 4)) {
+		t.Error("default matrix should be identity matrix")
+	}
+
+	transMat := matrix.Translation(2, 3, 4)
+	s.SetTransform(transMat)
+
+	if !matrix.AreEqual(s.transformMat, transMat) {
+		t.Errorf("expected %v, but got %v", transMat, s.transformMat)
 	}
 }

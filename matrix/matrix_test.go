@@ -36,7 +36,7 @@ func TestMatrixFromString(t *testing.T) {
 | 5 | 4 | 3 | 2 |
 `
 
-	expected := matrix{[]float64{1, 2, 3, 4}, []float64{5, 6, 7, 8}, []float64{9, 8, 7, 6}, []float64{5, 4, 3, 2}}
+	expected := Matrix{[]float64{1, 2, 3, 4}, []float64{5, 6, 7, 8}, []float64{9, 8, 7, 6}, []float64{5, 4, 3, 2}}
 
 	m, err := MatrixFromString(matString)
 	if err != nil {
@@ -663,7 +663,7 @@ func TestShearing(t *testing.T) {
 	p := tpv.Point(2, 3, 4)
 
 	tests := []struct {
-		shearTrans matrix
+		shearTrans Matrix
 		expected   tpv.Tuple
 	}{
 		{shearTrans: Shearing(1, 0, 0, 0, 0, 0), expected: tpv.Point(5, 3, 4)},

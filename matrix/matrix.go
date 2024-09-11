@@ -8,9 +8,9 @@ import (
 	tpv "ray-tracer/tuplespointsvectors"
 )
 
-type matrix [][]float64
+type Matrix [][]float64
 
-func (m matrix) Shape() (int, int) {
+func (m Matrix) Shape() (int, int) {
 	lenRows := len(m)
 	lenColumns := 0
 
@@ -21,9 +21,9 @@ func (m matrix) Shape() (int, int) {
 	return lenRows, lenColumns
 }
 
-func NewMatrix(rows, columns int) matrix {
+func NewMatrix(rows, columns int) Matrix {
 	if rows <= 0 || columns <= 0 {
-		return matrix{}
+		return Matrix{}
 	}
 
 	mat := make([][]float64, rows)
@@ -35,9 +35,9 @@ func NewMatrix(rows, columns int) matrix {
 	return mat
 }
 
-func NewIdentityMatrix(rows, columns int) matrix {
+func NewIdentityMatrix(rows, columns int) Matrix {
 	if rows != columns {
-		return matrix{}
+		return Matrix{}
 	}
 
 	mat := NewMatrix(rows, columns)
@@ -53,7 +53,7 @@ func NewIdentityMatrix(rows, columns int) matrix {
 	return mat
 }
 
-func AreEqual(a, b matrix) bool {
+func AreEqual(a, b Matrix) bool {
 	if len(a) == 0 && len(b) == 0 {
 		return true
 	}
@@ -77,7 +77,7 @@ func AreEqual(a, b matrix) bool {
 	return true
 }
 
-func Multiply(a, b matrix) matrix {
+func Multiply(a, b Matrix) Matrix {
 	newRows, _ := a.Shape()
 	_, newCols := b.Shape()
 
@@ -95,7 +95,7 @@ func Multiply(a, b matrix) matrix {
 	return new
 }
 
-func TupleMultiply(a tpv.Tuple, b matrix) tpv.Tuple {
+func TupleMultiply(a tpv.Tuple, b Matrix) tpv.Tuple {
 	var tempSlice [4]float64
 
 	for rowIndex, row := range b {
@@ -107,7 +107,7 @@ func TupleMultiply(a tpv.Tuple, b matrix) tpv.Tuple {
 	return tpv.Tuple{X: tempSlice[0], Y: tempSlice[1], Z: tempSlice[2], W: tempSlice[3]}
 }
 
-func Transpose(m matrix) matrix {
+func Transpose(m Matrix) Matrix {
 	rows, cols := m.Shape()
 
 	new := NewMatrix(cols, rows)
@@ -121,8 +121,8 @@ func Transpose(m matrix) matrix {
 	return new
 }
 
-func Submatrix(m matrix, delRow, delCol int) matrix {
-	new := matrix{}
+func Submatrix(m Matrix, delRow, delCol int) Matrix {
+	new := Matrix{}
 
 	for rowIndex := 0; rowIndex < len(m); rowIndex++ {
 		if rowIndex == delRow {
@@ -139,11 +139,11 @@ func Submatrix(m matrix, delRow, delCol int) matrix {
 	return new
 }
 
-func Minor(m matrix, delRow, delCol int) float64 {
+func Minor(m Matrix, delRow, delCol int) float64 {
 	return Submatrix(m, delRow, delCol).Determinant()
 }
 
-func Cofactor(m matrix, delRow, delCol int) float64 {
+func Cofactor(m Matrix, delRow, delCol int) float64 {
 	multiplier := 1.0
 
 	if (delRow+delCol)%2 != 0 {
@@ -153,7 +153,7 @@ func Cofactor(m matrix, delRow, delCol int) float64 {
 	return (multiplier) * (Minor(m, delRow, delCol))
 }
 
-func (m matrix) Determinant() float64 {
+func (m Matrix) Determinant() float64 {
 	rows, cols := m.Shape()
 
 	if rows == 2 && cols == 2 {
@@ -169,11 +169,11 @@ func (m matrix) Determinant() float64 {
 	return det
 }
 
-func (m matrix) IsInvertible() bool {
+func (m Matrix) IsInvertible() bool {
 	return !tpv.Equals(m.Determinant(), 0.0)
 }
 
-func (m matrix) Inverse() matrix {
+func (m Matrix) Inverse() Matrix {
 	det := m.Determinant()
 
 	rows, cols := m.Shape()
@@ -197,7 +197,7 @@ func (m matrix) Inverse() matrix {
 	return new
 }
 
-func Translation(x, y, z float64) matrix {
+func Translation(x, y, z float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][3] = (x)
@@ -207,7 +207,7 @@ func Translation(x, y, z float64) matrix {
 	return new
 }
 
-func (m matrix) Translate(x, y, z float64) matrix {
+func (m Matrix) Translate(x, y, z float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][3] = (x)
@@ -219,7 +219,7 @@ func (m matrix) Translate(x, y, z float64) matrix {
 	return res
 }
 
-func Scaling(x, y, z float64) matrix {
+func Scaling(x, y, z float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = (x)
@@ -229,7 +229,7 @@ func Scaling(x, y, z float64) matrix {
 	return new
 }
 
-func (m matrix) Scale(x, y, z float64) matrix {
+func (m Matrix) Scale(x, y, z float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = (x)
@@ -241,7 +241,7 @@ func (m matrix) Scale(x, y, z float64) matrix {
 	return res
 }
 
-func RotationX(radians float64) matrix {
+func RotationX(radians float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[1][1] = (math.Cos(radians))
@@ -252,7 +252,7 @@ func RotationX(radians float64) matrix {
 	return new
 }
 
-func (m matrix) RotateX(radians float64) matrix {
+func (m Matrix) RotateX(radians float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[1][1] = (math.Cos(radians))
@@ -265,7 +265,7 @@ func (m matrix) RotateX(radians float64) matrix {
 	return res
 }
 
-func RotationY(radians float64) matrix {
+func RotationY(radians float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = (math.Cos(radians))
@@ -276,7 +276,7 @@ func RotationY(radians float64) matrix {
 	return new
 }
 
-func (m matrix) RotateY(radians float64) matrix {
+func (m Matrix) RotateY(radians float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = (math.Cos(radians))
@@ -289,7 +289,7 @@ func (m matrix) RotateY(radians float64) matrix {
 	return res
 }
 
-func RotationZ(radians float64) matrix {
+func RotationZ(radians float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = (math.Cos(radians))
@@ -300,7 +300,7 @@ func RotationZ(radians float64) matrix {
 	return new
 }
 
-func (m matrix) RotateZ(radians float64) matrix {
+func (m Matrix) RotateZ(radians float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][0] = (math.Cos(radians))
@@ -313,7 +313,7 @@ func (m matrix) RotateZ(radians float64) matrix {
 	return res
 }
 
-func Shearing(xy, xz, yx, yz, zx, zy float64) matrix {
+func Shearing(xy, xz, yx, yz, zx, zy float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][1] = (xy)
@@ -326,7 +326,7 @@ func Shearing(xy, xz, yx, yz, zx, zy float64) matrix {
 	return new
 }
 
-func (m matrix) Shear(xy, xz, yx, yz, zx, zy float64) matrix {
+func (m Matrix) Shear(xy, xz, yx, yz, zx, zy float64) Matrix {
 	new := NewIdentityMatrix(4, 4)
 
 	new[0][1] = (xy)
@@ -341,8 +341,8 @@ func (m matrix) Shear(xy, xz, yx, yz, zx, zy float64) matrix {
 	return res
 }
 
-func MatrixFromString(matString string) (matrix, error) {
-	m := matrix{}
+func MatrixFromString(matString string) (Matrix, error) {
+	m := Matrix{}
 
 	for _, row := range strings.Split(matString, "\n") {
 		if strings.TrimSpace(row) == "" {
@@ -368,7 +368,7 @@ func MatrixFromString(matString string) (matrix, error) {
 	return m, nil
 }
 
-func (m matrix) String() string {
+func (m Matrix) String() string {
 	s := ""
 
 	for _, row := range m {

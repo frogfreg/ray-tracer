@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 
+	"ray-tracer/matrix"
 	tpv "ray-tracer/tuplespointsvectors"
 
 	"github.com/rs/xid"
@@ -18,9 +19,10 @@ type intersectable interface {
 }
 
 type sphere struct {
-	center tpv.Tuple
-	radio  float64
-	id     string
+	center       tpv.Tuple
+	radio        float64
+	id           string
+	transformMat matrix.Matrix
 }
 
 type collection []intersection
@@ -54,10 +56,12 @@ func NewIntersection(tValue float64, i intersectable) intersection {
 func NewSphere() *sphere {
 	guid := xid.New()
 
-	return &sphere{tpv.Point(0, 0, 0), 1, guid.String()}
+	return &sphere{tpv.Point(0, 0, 0), 1, guid.String(), matrix.NewIdentityMatrix(4, 4)}
 }
 
 func (s *sphere) Intersect(r ray) collection {
+	r = r.Transform(s.transformMat.Inverse())
+
 	sphereToRay := tpv.Subtract(r.Origin, s.center)
 
 	a := tpv.Dot(r.Direction, r.Direction)
@@ -92,4 +96,17 @@ func (c collection) Hit() (intersection, error) {
 	}
 
 	return hit, err
+}
+
+func (r ray) Transform(m matrix.Matrix) ray {
+	origin := matrix.TupleMultiply(r.Origin, m)
+	direction := matrix.TupleMultiply(r.Direction, m)
+
+	newRay, _ := NewRay(origin, direction)
+
+	return newRay
+}
+
+func (s *sphere) SetTransform(m matrix.Matrix) {
+	s.transformMat = m
 }
